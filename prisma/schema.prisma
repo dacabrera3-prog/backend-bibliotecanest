@@ -1,0 +1,59 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  SUBADMIN
+  BIBLIOTECARIO
+  PROFESOR
+  ESTUDIANTE
+  CLIENTE
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(CLIENTE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  loans     Loan[]
+}
+
+model Book {
+  id          String   @id @default(uuid())
+  title       String   // Búsqueda por Nombre
+  author      String   // Búsqueda por Autor
+  publisher   String   // Búsqueda por Editorial
+  year        Int      // Búsqueda por Año
+  stock       Int      @default(1)
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  loans       Loan[]
+}
+
+model Loan {
+  id             String    @id @default(uuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id])
+  bookId         String
+  book           Book      @relation(fields: [bookId], references: [id])
+  loanDate       DateTime  @default(now())
+  dueDate        DateTime  // Fecha máxima de devolución (10 días)
+  returnDate     DateTime? // Fecha real en la que se devuelve
+  documentType   String    // Tipo de documento entregado (cédula, etc.)
+  discount       Float     @default(0.0) // 0.50 para estudiantes, 1.00 para profesores
+  fineAmount     Float     @default(0.0) // Cálculo si excede los 10 días
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
