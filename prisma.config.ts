@@ -8,14 +8,9 @@ export default defineConfig({
   migrations: {
     path: "prisma/migrations",
   },
-  datasources: {
-    db: {
-      provider: "postgresql",
-      url: process.env["DATABASE_URL"],
-    },
-  },
   // Backwards-compatible single datasource URL used by some CLI commands
   datasource: {
     url: process.env["DATABASE_URL"],
   },
 });
+
