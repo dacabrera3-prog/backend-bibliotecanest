@@ -8,7 +8,6 @@ export default defineConfig({
   migrations: {
     path: "prisma/migrations",
   },
-  // Backwards-compatible single datasource URL used by some CLI commands
   datasource: {
     url: process.env["DATABASE_URL"],
   },
